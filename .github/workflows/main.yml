@@ -1,0 +1,28 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  myprojectdeploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git library
+        uses: actions/checkout@v4
+
+      - name: connection
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+         
+          script: |
+            cd /home/palak/seedlyfrtnd
+            git pull origin main
+            sudo npm i
+            sudo npm run build
+            pm2 start npm --name "frontend" -- run dev || pm2 restart "frontend"
